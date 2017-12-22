@@ -10,5 +10,6 @@ void main(){
 
     JordanElmanNet net;
     net.StartLearning();
+    net.GeneratePredictedSequence();
     return;
 }

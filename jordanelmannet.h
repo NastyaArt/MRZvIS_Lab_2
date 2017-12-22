@@ -19,9 +19,11 @@ class JordanElmanNet
 public:
     JordanElmanNet();
     void StartLearning();
+    void GeneratePredictedSequence();
 
 private:
-    vector<double> sequence;    //последовательность
+    vector<double> sequence;    //исходная последовательность
+    vector<double> resSequence;    //выходная последовательность
     int k; //размерность обучаемой последовательности
     int p;  //количество рядов в матрице обучения - размер окна
     int l;  //количество строк в матрице обучения - количество образов
@@ -32,7 +34,7 @@ private:
 
     mat X;  //матрица обучения p x l
     mat W;  //матрица весов W на первом слое k x l
-    mat Y;  //выходные значения на первом слое
+    mat Y;  //выходные значения на первом слое  ???
     mat W_; //матрица весов W_ на втором слое l x 1
     mat Y_; //выходные значения на втором слое 1 х 1
 

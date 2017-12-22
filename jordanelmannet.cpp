@@ -320,3 +320,27 @@ void JordanElmanNet::StartLearning()
 {
 
 }
+
+void JordanElmanNet::GeneratePredictedSequence()
+{
+    int num;
+    cout << "Input number of elements for predicting: (0<num<10)\n";
+    cin >> num;
+    if (num < 0 || num >10){
+        cout << "Invalid parameters!";
+                return;
+    }
+   // r=k+num;
+    resSequence = sequence;
+
+    //формирование элементов и добавление в resSequence
+
+    cout << "Result sequence: \n";
+    for (int i = 0; i < r; i++)
+    {
+        cout << resSequence[i];
+        if (i < k - 1)
+            cout << ", ";
+    }
+}
+
