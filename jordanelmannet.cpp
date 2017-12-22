@@ -2,21 +2,14 @@
 
 JordanElmanNet::JordanElmanNet()
 {
-    Create();
-}
-
-void JordanElmanNet::Create()
-{
-    //выбор ряда
     int key;
-
     cout << "Choose sequence: \n"
             << "1. Fibonacci series: \n0,1,1,2,3,5,8,13,21,34,55,89,144,...\n"
             << "2. Factorial function: \n1,2,6,24,120,720,5040,40320,...\n"
             << "3. Periodic function: \n1,0,-1,0,1,0,-1,...\n"
             << "4. Power function(x^2): \n1,4,9,16,25,36,49,64,81,...\n"
             << "5. Sequence of natural numbers: \n1,2,3,4,5,6,7,8,...\n"
-            << "6. Enter sequence\n";
+            << "6. Enter your own sequence\nChoose:";
 
     cin >> key;
     switch (key) {
@@ -28,20 +21,58 @@ void JordanElmanNet::Create()
                 cout << "Invalid parameters!";
                         return;
             }
+            k = num;
             sequence = CalcFibonacciSeries(num);
             PrintSequence();
+            int key;
+            cout << "\nUse standart params(1) or enter your own(2)?: \n";
+            cin >> key;
+            if (key == 1){
+                p = 2;
+                alfa = 0.001;
+                e = 0.1;
+                N = 1000000;
+                outputParameters();
+            }
+            else if (key == 2){
+                inputParameters();
+            }
+            else
+            {
+                cout << "Invalid parameters!";
+                return;
+            }
             break;
         }
         case 2:{
             int num;
-            cout << "Input number of elements: (2<=n<=15)\n";
+            cout << "Input number of elements: (2<=n<=8)\n";
             cin >> num;
-            if (num < 2 || num >15){
+            if (num < 2 || num >8){
                 cout << "Invalid parameters!";
                         return;
             }
+            k = num;
             sequence = CalcFactorialFunction(num);
             PrintSequence();
+            int key;
+            cout << "\nUse standart params(1) or enter your own(2)?: \n";
+            cin >> key;
+            if (key == 1){
+                p = 6;
+                alfa = 0.001;
+                e = 0.1;
+                N = 1000000;
+                outputParameters();
+            }
+            else if (key == 2){
+                inputParameters();
+            }
+            else
+            {
+                cout << "Invalid parameters!";
+                return;
+            }
             break;
         }
         case 3:{
@@ -52,20 +83,58 @@ void JordanElmanNet::Create()
                 cout << "Invalid parameters!";
                         return;
             }
+            k = num;
             sequence = CalcPeriodicFunction(num);
             PrintSequence();
+            int key;
+            cout << "\nUse standart params(1) or enter your own(2)?: \n";
+            cin >> key;
+            if (key == 1){
+                p = 4;
+                alfa = 0.001;
+                e = 0.1;
+                N = 1000000;
+                outputParameters();
+            }
+            else if (key == 2){
+                inputParameters();
+            }
+            else
+            {
+                cout << "Invalid parameters!";
+                return;
+            }
             break;
         }
         case 4:{
             int num;
-            cout << "Input number of elements: (2<=n<=15)\n";
+            cout << "Input number of elements: (2<=n<=8)\n";
             cin >> num;
-            if (num < 2 || num >15){
+            if (num < 2 || num >8){
                 cout << "Invalid parameters!";
                         return;
             }
+            k = num;
             sequence = CalcPowerFunction(num);
             PrintSequence();
+            int key;
+            cout << "\nUse standart params(1) or enter your own(2)?: \n";
+            cin >> key;
+            if (key == 1){
+                p = 2;
+                alfa = 0.001;
+                e = 0.1;
+                N = 1000000;
+                outputParameters();
+            }
+            else if (key == 2){
+                inputParameters();
+            }
+            else
+            {
+                cout << "Invalid parameters!";
+                return;
+            }
             break;
         }
         case 5:{
@@ -76,18 +145,38 @@ void JordanElmanNet::Create()
                 cout << "Invalid parameters!";
                         return;
             }
+            k = num;
             sequence = CalcSequenceOfNaturalNumbers(num);
             PrintSequence();
+            int key;
+            cout << "\nUse standart params(1) or enter your own(2)?: \n";
+            cin >> key;
+            if (key == 1){
+                p = 2;
+                alfa = 0.001;
+                e = 0.1;
+                N = 1000000;
+                outputParameters();
+            }
+            else if (key == 2){
+                inputParameters();
+            }
+            else
+            {
+                cout << "Invalid parameters!";
+                return;
+            }
             break;
         }
         case 6:{
             int num;
-            cout << "Input number of elements: (2<=n<=15)\n";
+            cout << "Input number of elements: (2<=n<=10)\n";
             cin >> num;
-            if (num < 2 || num >15){
+            if (num < 2 || num >10){
                 cout << "Invalid parameters!";
                         return;
             }
+            k = num;
             sequence.clear();
             double x;
             cout << "Input elements: \n";
@@ -97,6 +186,7 @@ void JordanElmanNet::Create()
                 sequence.push_back(x);
             }
             PrintSequence();
+            inputParameters();
             break;
         }
         default:{
@@ -104,23 +194,36 @@ void JordanElmanNet::Create()
             return;
         }
     }
-    //ввод параметров
-    //создание сети исходя из вышеперечисленного
-
+    CreateMatrixes();
 }
 
 void JordanElmanNet::inputParameters()
 {
+    cout << "Enter window size(p) (p>=1 & p<k)\n";
+    cin >> p;
+    cout << "Enter max error(e) (0<е<=0.1)\n";
+    cin >> e;
+    cout << "Enter step learning(alfa) (0<alfa<=0.1 & alfa<=е)\n";
+    cin >> alfa;
+    cout << "Enter max number of learning steps(N)(1<=N<=1000000)\n";
+    cin >> N;
+}
 
+void JordanElmanNet::outputParameters()
+{
+    cout << "Window size p = " << p << "\n";
+    cout << "Max error e = " << e << "\n";
+    cout << "Step learning alfa = " << alfa << "\n";
+    cout << "Max number of learning steps N = " << N << "\n";
 }
 
 void JordanElmanNet::PrintSequence()
 {
     cout << "Learning sequence: \n";
-    for (int i = 0; i < num; i++)
+    for (int i = 0; i < k; i++)
     {
         cout << sequence[i];
-        if (i < num-1)
+        if (i < k - 1)
             cout << ", ";
     }
 }
@@ -207,7 +310,13 @@ vector<double> JordanElmanNet::CalcSequenceOfNaturalNumbers(int num)
     return seq;
 }
 
-void JordanElmanNet::start()
+void JordanElmanNet::CreateMatrixes()
+{
+
+
+}
+
+void JordanElmanNet::StartLearning()
 {
 
 }

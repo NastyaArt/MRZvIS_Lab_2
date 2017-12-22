@@ -8,9 +8,7 @@ using namespace std;
 
 void main(){
 
-    //иництализация
     JordanElmanNet net;
-    //начало вычислений
-    net.start();
+    net.StartLearning();
     return;
 }

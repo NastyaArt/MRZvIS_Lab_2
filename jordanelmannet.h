@@ -18,21 +18,28 @@ class JordanElmanNet
 {
 public:
     JordanElmanNet();
-    void start();
+    void StartLearning();
 
 private:
     vector<double> sequence;    //последовательность
     int k; //размерность обучаемой последовательности
-    int p;  //количество рядов в матрице обучения
-    int L;  //количество строк в матрице обучения - количество образов
+    int p;  //количество рядов в матрице обучения - размер окна
+    int l;  //количество строк в матрице обучения - количество образов
     double e; //максимально допустимая ошибка
     double alfa; //коэффициент альфа
     int N; //количество шагов обучения
     int r; //размер выходной последовательности
 
-    void Create();
+    mat X;  //матрица обучения p x l
+    mat W;  //матрица весов W на первом слое k x l
+    mat Y;  //выходные значения на первом слое
+    mat W_; //матрица весов W_ на втором слое l x 1
+    mat Y_; //выходные значения на втором слое 1 х 1
+
     void inputParameters();
+    void outputParameters();
     void PrintSequence();
+    void CreateMatrixes();
     vector<double> CalcFibonacciSeries(int num);
     vector<double> CalcFactorialFunction(int num);
     vector<double> CalcPeriodicFunction(int num);
