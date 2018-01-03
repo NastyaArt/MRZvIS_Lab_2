@@ -27,27 +27,30 @@ private:
     vector<double> resSequence;    //выходная последовательность
     int k;  //размерность обучаемой последовательности
     int p;  //количество рядов в матрице обучения - размер окна
-    int m;  //количество образо или количество нейронов скрытого слоя
+    int m;  //количество образов или количество нейронов скрытого слоя
     double e; //максимально допустимая ошибка
     double alfa; //коэффициент альфа
     int N; //максимальное количество шагов обучения
     int r; //количество предсказываемых элементов
 
-    vector<double> hiden;   //скрытый слой
-    double output;          //выходной слой
-    vector<double> context_hiden;   //контекстный слой для скрытого слоя
-    double context_output;          //контекстный слой для выходного слоя
-    mat X;  //матрица обучения p x L
-    mat W;  //матрица весов W на скрытом слое k x L
-    mat Wch_h;  //матрица весов между контекстным с предыдущими значениями скрытого и скрытым слоем
-    mat W_; //матрица весов W_ на выходном слое L x 1
-    mat Wco_h; //матрица весов между контекстным с предыдущим значением выходного и скрытым слоем
+    vector<double> input;   //входной слой (p)
+    vector<double> hiden;   //скрытый слой (m)
+    double output;          //выходной слой (1)
+    vector<double> context_hiden;   //контекстный слой для скрытого слоя (m)
+    double context_output;          //контекстный слой для выходного слоя (1)
+    mat X;  //матрица обучения m x p
+    mat W;  //матрица весов W на скрытом слое p x m
+    mat Wch_h;  //матрица весов между контекстным с предыдущими значениями скрытого и скрытым слоем m x m
+    mat W_; //матрица весов W_ на выходном слое m x 1
+    mat Wco_h; //матрица весов между контекстным с предыдущим значением выходного и скрытым слоем 1 x m
 
+    vector<double> expValues;   //значения, которые необходимо получить при обучении для каждого входного вектора
     void EnterInputParameters();
     void ShowInputParameters();
     bool CheckInputParameters();
     void PrintSequence();
     void CreateMatrixes();
+    double GetRandom();
     double ActFunc(double x);
     double DerOfActFunc(double x);
     vector<double> CalcFibonacciSeries(int num);

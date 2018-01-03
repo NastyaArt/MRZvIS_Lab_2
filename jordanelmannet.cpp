@@ -241,6 +241,7 @@ JordanElmanNet::JordanElmanNet()
             return;
         }
     }
+    printf("Validatins\n");
     if (!CheckInputParameters())
         return;
     CreateMatrixes();
@@ -251,9 +252,9 @@ void JordanElmanNet::EnterInputParameters()
     cout << "Enter window size(p) (p>=1 & p<k)\n";
     cin >> p;
     m = k - p;
-    cout << "Enter max error(e) (0<е<=0.1)\n";
+    cout << "Enter max error(e) (0<e<=0.1)\n";
     cin >> e;
-    cout << "Enter step learning(alfa) (0<alfa<=0.1 & alfa<=е)\n";
+    cout << "Enter step learning(alfa) (0<alfa<=0.1 & alfa<=e)\n";
     cin >> alfa;
     cout << "Enter max number of learning steps(N)(1<=N<=1000000)\n";
     cin >> N;
@@ -272,9 +273,9 @@ bool JordanElmanNet::CheckInputParameters()
 {
     if (p <= 0 || p >= k || e <= 0 || e > 0.1 || alfa <= 0 || alfa > 0.1 || N < 1 || N > 1000000){
         cout << "Invalid parameters!";
-        return 1;
+        return false;
     }
-    return 0;
+    return true;
 
 }
 
@@ -373,18 +374,62 @@ vector<double> JordanElmanNet::CalcSequenceOfNaturalNumbers(int num)
 
 double JordanElmanNet::ActFunc(double x)
 {
-    return (exp(x)-exp(-x))/(exp(x)+exp(-x));
+    return (exp(x) - exp(-x)) / (exp(x) + exp(-x));
 }
 
 double JordanElmanNet::DerOfActFunc(double x)
 {
-    return 4.0/pow((exp(x)+exp(-x)),2);
+//    return 4.0/pow((exp(x)+exp(-x)),2);
+    return 1.0 - pow(x, 2);
 }
 
 void JordanElmanNet::CreateMatrixes()
 {
+    printf("CreateMatrixes\n");
+    input.clear();
+    hiden.clear();
+    output = 0;
+    context_hiden.clear();
+    context_output = 0;
 
+    mat X(m, p);
+    for (int i = 0; i < m; i++)
+    {
+        for (int j = 0; j < p; j++)
+        {
+            X(i, j) = sequence[i + j];
+//            cout << X(i, j) << " ";
+        }
 
+        expValues.push_back(sequence[i + p]);
+//        cout << "| " << expValues[i];
+//        cout << endl;
+    }
+    this->X = X;
+
+/**
+ * randu( n_elem )
+ * Generate a vector, matrix or cube with the elements set to random floating point values
+ * randu() uses a uniform distribution in the [0,1] interval
+*/
+    arma_rng::set_seed_random(); // set the seed to a random value
+    W = randu<mat>(p,m); //заполнение псевдо-случайными числами в интервале [0,1]
+    W = (W * 2.0 - 1.0);  //преобразование чисел под интервал [-1,1]
+
+    Wch_h = randu<mat>(m,m); //заполнение псевдо-случайными числами в интервале [0,1]
+    Wch_h = (Wch_h * 2.0 - 1.0);  //преобразование чисел под интервал [-1,1]
+
+    W_ = randu<mat>(m,1); //заполнение псевдо-случайными числами в интервале [0,1]
+    W_ = (W_ * 2.0 - 1.0);  //преобразование чисел под интервал [-1,1]
+
+    Wco_h = randu<mat>(1,m); //заполнение псевдо-случайными числами в интервале [0,1]
+    Wco_h = (Wco_h * 2.0 - 1.0);  //преобразование чисел под интервал [-1,1]
+
+}
+
+double JordanElmanNet::GetRandom()
+{
+    return 2.0 * ( (double)rand() / (double)RAND_MAX ) - 1.0;
 }
 
 void JordanElmanNet::StartLearning()

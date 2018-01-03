@@ -12,5 +12,6 @@ void main(){
 //    net.StartLearning();
 //    net.GeneratePredictedSequence();
 
+
     return;
 }
