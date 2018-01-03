@@ -241,7 +241,6 @@ JordanElmanNet::JordanElmanNet()
             return;
         }
     }
-    printf("Validatins\n");
     if (!CheckInputParameters())
         return;
     CreateMatrixes();
@@ -386,11 +385,22 @@ double JordanElmanNet::DerOfActFunc(double x)
 void JordanElmanNet::CreateMatrixes()
 {
     printf("CreateMatrixes\n");
-    input.clear();
-    hiden.clear();
+    vec input(p);
+    input.fill(0);
+    this->input = input;
+    vec hidden(m);
+    hidden.fill(0);
+    this->hidden = hidden;
     output = 0;
-    context_hiden.clear();
+    vec context_hidden(p);
+    context_hidden.fill(0);
+    this->context_hidden = context_hidden;
     context_output = 0;
+
+    vec T(m);
+    T.fill(0);
+    this->T = T;
+    T_ = 0;
 
     mat X(m, p);
     for (int i = 0; i < m; i++)
@@ -400,7 +410,6 @@ void JordanElmanNet::CreateMatrixes()
             X(i, j) = sequence[i + j];
 //            cout << X(i, j) << " ";
         }
-
         expValues.push_back(sequence[i + p]);
 //        cout << "| " << expValues[i];
 //        cout << endl;
@@ -412,17 +421,16 @@ void JordanElmanNet::CreateMatrixes()
  * Generate a vector, matrix or cube with the elements set to random floating point values
  * randu() uses a uniform distribution in the [0,1] interval
 */
-    arma_rng::set_seed_random(); // set the seed to a random value
-    W = randu<mat>(p,m); //заполнение псевдо-случайными числами в интервале [0,1]
+    W = randu<mat>(p, m); //заполнение псевдо-случайными числами в интервале [0,1]
     W = (W * 2.0 - 1.0);  //преобразование чисел под интервал [-1,1]
 
-    Wch_h = randu<mat>(m,m); //заполнение псевдо-случайными числами в интервале [0,1]
+    Wch_h = randu<mat>(m, m); //заполнение псевдо-случайными числами в интервале [0,1]
     Wch_h = (Wch_h * 2.0 - 1.0);  //преобразование чисел под интервал [-1,1]
 
-    W_ = randu<mat>(m,1); //заполнение псевдо-случайными числами в интервале [0,1]
+    W_ = randu<mat>(m, 1); //заполнение псевдо-случайными числами в интервале [0,1]
     W_ = (W_ * 2.0 - 1.0);  //преобразование чисел под интервал [-1,1]
 
-    Wco_h = randu<mat>(1,m); //заполнение псевдо-случайными числами в интервале [0,1]
+    Wco_h = randu<mat>(1, m); //заполнение псевдо-случайными числами в интервале [0,1]
     Wco_h = (Wco_h * 2.0 - 1.0);  //преобразование чисел под интервал [-1,1]
 
 }
@@ -434,7 +442,106 @@ double JordanElmanNet::GetRandom()
 
 void JordanElmanNet::StartLearning()
 {
+    double E;
+    int iteration = 0;
 
+    do {
+        iteration++;
+        E = 0.0;
+        for (int i = 0; i < m; i++) {
+
+            input = conv_to<vec>::from(X.row(i));
+
+            DirectErrorProp();
+
+            E += pow(output - expValues[i], 2) / 2;
+
+            BackErrorProp(expValues[i]);
+
+        }
+        if (iteration <= 10 || iteration % 1000 == 0 )
+            cout << "Iteration: " << iteration << " Error: " << E << endl;
+
+    } while (E > e);
+
+    cout << "Finish learning" << endl;
+    cout << "Iterations = " << iteration << " \nError = " << E << endl;
+    cout << "Output = " << output << endl;
+}
+
+void JordanElmanNet::DirectErrorProp()
+{
+    double S;
+
+    for (int j = 0; j < m; j++) {
+        S = 0.0;
+
+        for (int i = 0; i < p; i++) {
+            S += W(i, j) * input[i];
+        }
+
+        for (int i = 0; i < m; i++) {
+            S += Wch_h(i, j) * context_hidden[i];
+        }
+
+        S += Wco_h(0, j) * context_output;
+
+        // Substruct input bias	// пороговое значение ???
+        S -= T(j);
+
+        hidden[j] = ActFunc(S);
+    }
+
+    S = 0.0;
+
+    for (int i = 0; i < m; i++) {
+        S += W_(i, 0) * hidden[i];
+    }
+
+    // Substruct hidden bias	// пороговое значение ???
+    S -= T_;
+
+    output = ActFunc(S);
+
+    // Copy hidden to context
+    for (int i = 0; i < m; i++) {
+        context_hidden[i] = hidden[i];
+    }
+
+    // Copy output to context
+    context_output = output;
+
+}
+
+void JordanElmanNet::BackErrorProp(double val)
+{
+//    double a = 0.0001; //adaptiveStep();
+    double diff = alfa * (output - val);
+//    cout << output << endl;
+//    cout << val << endl;
+//    cout << diff << endl;
+
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < p; j++) {
+            W(j, i) -= diff * W_(i, 0) * DerOfActFunc(hidden[i]) * input[j];
+        }
+
+        for (int j = 0; j < m; j++) {
+            Wch_h(j, i) -= diff * W_(i, 0) * DerOfActFunc(hidden[i]) * context_hidden[j];
+        }
+
+        W_(i, 0) -= diff * hidden[i];
+        Wco_h(0, i) -= diff * W_(i, 0) * DerOfActFunc(hidden[i]) * context_output;
+        T(i) = diff * W_(i, 0) * DerOfActFunc(hidden[i]);
+    }
+
+    T_ = diff;
+
+    //normalizeWeights();
+//    cout << W << endl;
+//    cout << W_ << endl;
+//    cout << Wch_h << endl;
+//    cout << Wco_h << endl;
 }
 
 void JordanElmanNet::GeneratePredictedSequence()
