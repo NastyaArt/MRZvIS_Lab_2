@@ -17,7 +17,7 @@ JordanElmanNet::JordanElmanNet()
             int num;
             cout << "Input number of elements: (2<=n<=15)\n";
             cin >> num;
-            if (num < 2 || num >15){
+            if (num < 2 || num > 15){
                 cout << "Invalid parameters!";
                         return;
             }
@@ -29,26 +29,34 @@ JordanElmanNet::JordanElmanNet()
             cin >> key;
             if (key == 1){
                 p = 2;
+                m = k - p;
                 alfa = 0.001;
                 e = 0.1;
                 N = 1000000;
-                outputParameters();
+                ShowInputParameters();
             }
             else if (key == 2){
-                inputParameters();
+                EnterInputParameters();
             }
             else
             {
                 cout << "Invalid parameters!";
                 return;
             }
+            cout << "Input number of elements to predict: (1<=n<=10)\n";
+            cin >> num;
+            if (num < 1 || num > 10){
+                cout << "Invalid parameters!";
+                        return;
+            }
+            r = num;
             break;
         }
         case 2:{
             int num;
             cout << "Input number of elements: (2<=n<=8)\n";
             cin >> num;
-            if (num < 2 || num >8){
+            if (num < 2 || num > 8){
                 cout << "Invalid parameters!";
                         return;
             }
@@ -60,26 +68,34 @@ JordanElmanNet::JordanElmanNet()
             cin >> key;
             if (key == 1){
                 p = 6;
+                m = k - p;
                 alfa = 0.001;
                 e = 0.1;
                 N = 1000000;
-                outputParameters();
+                ShowInputParameters();
             }
             else if (key == 2){
-                inputParameters();
+                EnterInputParameters();
             }
             else
             {
                 cout << "Invalid parameters!";
                 return;
             }
+            cout << "Input number of elements to predict: (1<=n<=10)\n";
+            cin >> num;
+            if (num < 1 || num > 10){
+                cout << "Invalid parameters!";
+                        return;
+            }
+            r = num;
             break;
         }
         case 3:{
             int num;
             cout << "Input number of elements: (2<=n<=15)\n";
             cin >> num;
-            if (num < 2 || num >15){
+            if (num < 2 || num > 15){
                 cout << "Invalid parameters!";
                         return;
             }
@@ -91,26 +107,34 @@ JordanElmanNet::JordanElmanNet()
             cin >> key;
             if (key == 1){
                 p = 4;
+                m = k - p;
                 alfa = 0.001;
                 e = 0.1;
                 N = 1000000;
-                outputParameters();
+                ShowInputParameters();
             }
             else if (key == 2){
-                inputParameters();
+                EnterInputParameters();
             }
             else
             {
                 cout << "Invalid parameters!";
                 return;
             }
+            cout << "Input number of elements to predict: (1<=n<=10)\n";
+            cin >> num;
+            if (num < 1 || num > 10){
+                cout << "Invalid parameters!";
+                        return;
+            }
+            r = num;
             break;
         }
         case 4:{
             int num;
             cout << "Input number of elements: (2<=n<=8)\n";
             cin >> num;
-            if (num < 2 || num >8){
+            if (num < 2 || num > 8){
                 cout << "Invalid parameters!";
                         return;
             }
@@ -122,26 +146,34 @@ JordanElmanNet::JordanElmanNet()
             cin >> key;
             if (key == 1){
                 p = 2;
+                m = k - p;
                 alfa = 0.001;
                 e = 0.1;
                 N = 1000000;
-                outputParameters();
+                ShowInputParameters();
             }
             else if (key == 2){
-                inputParameters();
+                EnterInputParameters();
             }
             else
             {
                 cout << "Invalid parameters!";
                 return;
             }
+            cout << "Input number of elements to predict: (1<=n<=10)\n";
+            cin >> num;
+            if (num < 1 || num > 10){
+                cout << "Invalid parameters!";
+                        return;
+            }
+            r = num;
             break;
         }
         case 5:{
             int num;
             cout << "Input number of elements: (2<=n<=15)\n";
             cin >> num;
-            if (num < 2 || num >15){
+            if (num < 2 || num > 15){
                 cout << "Invalid parameters!";
                         return;
             }
@@ -153,26 +185,34 @@ JordanElmanNet::JordanElmanNet()
             cin >> key;
             if (key == 1){
                 p = 2;
+                m = k - p;
                 alfa = 0.001;
                 e = 0.1;
                 N = 1000000;
-                outputParameters();
+                ShowInputParameters();
             }
             else if (key == 2){
-                inputParameters();
+                EnterInputParameters();
             }
             else
             {
                 cout << "Invalid parameters!";
                 return;
             }
+            cout << "Input number of elements to predict: (1<=n<=10)\n";
+            cin >> num;
+            if (num < 1 || num > 10){
+                cout << "Invalid parameters!";
+                        return;
+            }
+            r = num;
             break;
         }
         case 6:{
             int num;
             cout << "Input number of elements: (2<=n<=10)\n";
             cin >> num;
-            if (num < 2 || num >10){
+            if (num < 2 || num > 10){
                 cout << "Invalid parameters!";
                         return;
             }
@@ -186,7 +226,14 @@ JordanElmanNet::JordanElmanNet()
                 sequence.push_back(x);
             }
             PrintSequence();
-            inputParameters();
+            EnterInputParameters();
+            cout << "Input number of elements to predict: (1<=n<=10)\n";
+            cin >> num;
+            if (num < 1 || num > 10){
+                cout << "Invalid parameters!";
+                        return;
+            }
+            r = num;
             break;
         }
         default:{
@@ -194,13 +241,16 @@ JordanElmanNet::JordanElmanNet()
             return;
         }
     }
+    if (!CheckInputParameters())
+        return;
     CreateMatrixes();
 }
 
-void JordanElmanNet::inputParameters()
+void JordanElmanNet::EnterInputParameters()
 {
     cout << "Enter window size(p) (p>=1 & p<k)\n";
     cin >> p;
+    m = k - p;
     cout << "Enter max error(e) (0<е<=0.1)\n";
     cin >> e;
     cout << "Enter step learning(alfa) (0<alfa<=0.1 & alfa<=е)\n";
@@ -209,12 +259,23 @@ void JordanElmanNet::inputParameters()
     cin >> N;
 }
 
-void JordanElmanNet::outputParameters()
+void JordanElmanNet::ShowInputParameters()
 {
     cout << "Window size p = " << p << "\n";
+    cout << "Number of images in the training sample m = " << m << "\n";
     cout << "Max error e = " << e << "\n";
     cout << "Step learning alfa = " << alfa << "\n";
     cout << "Max number of learning steps N = " << N << "\n";
+}
+
+bool JordanElmanNet::CheckInputParameters()
+{
+    if (p <= 0 || p >= k || e <= 0 || e > 0.1 || alfa <= 0 || alfa > 0.1 || N < 1 || N > 1000000){
+        cout << "Invalid parameters!";
+        return 1;
+    }
+    return 0;
+
 }
 
 void JordanElmanNet::PrintSequence()
@@ -310,6 +371,16 @@ vector<double> JordanElmanNet::CalcSequenceOfNaturalNumbers(int num)
     return seq;
 }
 
+double JordanElmanNet::ActFunc(double x)
+{
+    return (exp(x)-exp(-x))/(exp(x)+exp(-x));
+}
+
+double JordanElmanNet::DerOfActFunc(double x)
+{
+    return 4.0/pow((exp(x)+exp(-x)),2);
+}
+
 void JordanElmanNet::CreateMatrixes()
 {
 
@@ -323,14 +394,6 @@ void JordanElmanNet::StartLearning()
 
 void JordanElmanNet::GeneratePredictedSequence()
 {
-    int num;
-    cout << "Input number of elements for predicting: (0<num<10)\n";
-    cin >> num;
-    if (num < 0 || num >10){
-        cout << "Invalid parameters!";
-                return;
-    }
-   // r=k+num;
     resSequence = sequence;
 
     //формирование элементов и добавление в resSequence

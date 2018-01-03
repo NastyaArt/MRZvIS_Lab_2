@@ -9,7 +9,8 @@ using namespace std;
 void main(){
 
     JordanElmanNet net;
-    net.StartLearning();
-    net.GeneratePredictedSequence();
+//    net.StartLearning();
+//    net.GeneratePredictedSequence();
+
     return;
 }
