@@ -15,9 +15,9 @@ JordanElmanNet::JordanElmanNet()
     switch (key) {
         case 1:{
             int num;
-            cout << "Input number of elements: (2<=n<=15)\n";
+            cout << "Input number of elements: (3<=n<=15)\n";
             cin >> num;
-            if (num < 2 || num > 15){
+            if (num < 3 || num > 15){
                 cout << "Invalid parameters!";
                         return;
             }
@@ -31,7 +31,7 @@ JordanElmanNet::JordanElmanNet()
                 p = 2;
                 m = k - p;
                 alfa = 0.001;
-                e = 0.1;
+                e = 0.000001;
                 N = 1000000;
                 ShowInputParameters();
             }
@@ -50,13 +50,14 @@ JordanElmanNet::JordanElmanNet()
                         return;
             }
             r = num;
+            expSequence = CalcFibonacciSeries(k+r);
             break;
         }
         case 2:{
             int num;
-            cout << "Input number of elements: (2<=n<=8)\n";
+            cout << "Input number of elements: (4<=n<=8)\n";
             cin >> num;
-            if (num < 2 || num > 8){
+            if (num < 4 || num > 8){
                 cout << "Invalid parameters!";
                         return;
             }
@@ -67,10 +68,10 @@ JordanElmanNet::JordanElmanNet()
             cout << "\nUse standart params(1) or enter your own(2)?: \n";
             cin >> key;
             if (key == 1){
-                p = 6;
+                p = 3;
                 m = k - p;
                 alfa = 0.001;
-                e = 0.1;
+                e = 0.000001;
                 N = 1000000;
                 ShowInputParameters();
             }
@@ -89,13 +90,14 @@ JordanElmanNet::JordanElmanNet()
                         return;
             }
             r = num;
+            expSequence = CalcFactorialFunction(k+r);
             break;
         }
         case 3:{
             int num;
-            cout << "Input number of elements: (2<=n<=15)\n";
+            cout << "Input number of elements: (5<=n<=15)\n";
             cin >> num;
-            if (num < 2 || num > 15){
+            if (num < 5 || num > 15){
                 cout << "Invalid parameters!";
                         return;
             }
@@ -109,7 +111,7 @@ JordanElmanNet::JordanElmanNet()
                 p = 4;
                 m = k - p;
                 alfa = 0.001;
-                e = 0.1;
+                e = 0.000001;
                 N = 1000000;
                 ShowInputParameters();
             }
@@ -128,13 +130,14 @@ JordanElmanNet::JordanElmanNet()
                         return;
             }
             r = num;
+            expSequence = CalcPeriodicFunction(k+r);
             break;
         }
         case 4:{
             int num;
-            cout << "Input number of elements: (2<=n<=8)\n";
+            cout << "Input number of elements: (4<=n<=8)\n";
             cin >> num;
-            if (num < 2 || num > 8){
+            if (num < 4 || num > 8){
                 cout << "Invalid parameters!";
                         return;
             }
@@ -145,10 +148,10 @@ JordanElmanNet::JordanElmanNet()
             cout << "\nUse standart params(1) or enter your own(2)?: \n";
             cin >> key;
             if (key == 1){
-                p = 2;
+                p = 3;
                 m = k - p;
                 alfa = 0.001;
-                e = 0.1;
+                e = 0.000001;
                 N = 1000000;
                 ShowInputParameters();
             }
@@ -167,13 +170,14 @@ JordanElmanNet::JordanElmanNet()
                         return;
             }
             r = num;
+            expSequence = CalcPowerFunction(k+r);
             break;
         }
         case 5:{
             int num;
-            cout << "Input number of elements: (2<=n<=15)\n";
+            cout << "Input number of elements: (3<=n<=15)\n";
             cin >> num;
-            if (num < 2 || num > 15){
+            if (num < 3 || num > 15){
                 cout << "Invalid parameters!";
                         return;
             }
@@ -187,7 +191,7 @@ JordanElmanNet::JordanElmanNet()
                 p = 2;
                 m = k - p;
                 alfa = 0.001;
-                e = 0.1;
+                e = 0.000001;
                 N = 1000000;
                 ShowInputParameters();
             }
@@ -206,6 +210,7 @@ JordanElmanNet::JordanElmanNet()
                         return;
             }
             r = num;
+            expSequence = CalcSequenceOfNaturalNumbers(k+r);
             break;
         }
         case 6:{
@@ -234,6 +239,15 @@ JordanElmanNet::JordanElmanNet()
                         return;
             }
             r = num;
+            expSequence = sequence;
+            double ex;
+            cout << "Input expected values:\n";
+            for (int i = 0; i < r; i++)
+            {
+                cout << i + 1 << ")";
+                cin >> ex;
+                expSequence.push_back(ex);
+            }
             break;
         }
         default:{
@@ -248,7 +262,7 @@ JordanElmanNet::JordanElmanNet()
 
 void JordanElmanNet::EnterInputParameters()
 {
-    cout << "Enter window size(p) (p>=1 & p<k)\n";
+    cout << "\nEnter window size(p) (p>=1 & p<k)\n";
     cin >> p;
     m = k - p;
     cout << "Enter max error(e) (0<e<=0.1)\n";
@@ -459,14 +473,13 @@ void JordanElmanNet::StartLearning()
             BackErrorProp(expValues[i]);
 
         }
-        if (iteration <= 10 || iteration % 1000 == 0 )
+        if (iteration <= 10 || iteration % 10000 == 0 )
             cout << "Iteration: " << iteration << " Error: " << E << endl;
 
-    } while (E > e);
+    } while (E > e || iteration >= N);
 
     cout << "Finish learning" << endl;
     cout << "Iterations = " << iteration << " \nError = " << E << endl;
-    cout << "Output = " << output << endl;
 }
 
 void JordanElmanNet::DirectErrorProp()
@@ -486,7 +499,6 @@ void JordanElmanNet::DirectErrorProp()
 
         S += Wco_h(0, j) * context_output;
 
-        // Substruct input bias	// пороговое значение ???
         S -= T(j);
 
         hidden[j] = ActFunc(S);
@@ -498,28 +510,21 @@ void JordanElmanNet::DirectErrorProp()
         S += W_(i, 0) * hidden[i];
     }
 
-    // Substruct hidden bias	// пороговое значение ???
     S -= T_;
 
     output = ActFunc(S);
 
-    // Copy hidden to context
     for (int i = 0; i < m; i++) {
         context_hidden[i] = hidden[i];
     }
 
-    // Copy output to context
     context_output = output;
 
 }
 
 void JordanElmanNet::BackErrorProp(double val)
 {
-//    double a = 0.0001; //adaptiveStep();
     double diff = alfa * (output - val);
-//    cout << output << endl;
-//    cout << val << endl;
-//    cout << diff << endl;
 
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < p; j++) {
@@ -538,24 +543,43 @@ void JordanElmanNet::BackErrorProp(double val)
     T_ = diff;
 
     //normalizeWeights();
-//    cout << W << endl;
-//    cout << W_ << endl;
-//    cout << Wch_h << endl;
-//    cout << Wco_h << endl;
 }
 
 void JordanElmanNet::GeneratePredictedSequence()
 {
-    resSequence = sequence;
+    resSequence.clear();
 
-    //формирование элементов и добавление в resSequence
+    int j = k - p;
+    for (int i = 0; i < p; i++)
+    {
+        input[i] = sequence[j];
+        j++;
+    }
+
+    for (int i = 0; i < r; i++)
+    {
+        if (i > 0)
+        {
+            for (int j = 0; j < p-1; j++)
+            {
+                input[j] = input[j+1];
+            }
+
+        input[p-1] = output;
+        }
+
+        cout << input << endl;
+
+        DirectErrorProp();
+
+        resSequence.push_back(output);
+
+    }
 
     cout << "Result sequence: \n";
     for (int i = 0; i < r; i++)
     {
-        cout << resSequence[i];
-        if (i < k - 1)
-            cout << ", ";
+        cout << "Result: " << resSequence[i] << "  Expected value: " << expSequence[k+i] << "  Line error: " << expSequence[k+i] - resSequence[i] << endl;
     }
 }
 
